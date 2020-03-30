@@ -1,3 +1,6 @@
+"""
+Extract coordinates(x,y,z) from contours of topographic map
+"""
 import os,sys
 os.chdir(r'F:\PycharmProject\PycomCAD')
 sys.path.append(r'F:\PycharmProject\PycomCAD')
