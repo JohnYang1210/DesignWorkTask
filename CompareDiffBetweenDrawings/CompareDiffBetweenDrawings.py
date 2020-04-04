@@ -95,16 +95,14 @@ def AddAnnotation(acad,diff,layername,anno_prefix,radius,height):
 	acad.ActivateLayer(layername)
 	for i in diff:
 		eleSet=diff[i]
-		if i not in ('AcDbPoint','AcDb2dPolyline','AcDbPolyline'):
-			for ele in eleSet:
+		for ele in eleSet:
+			if i not in ('AcDbPoint','AcDb2dPolyline','AcDbPolyline'):
 				coord=ele[0]
-				acad.AddCircle(Apoint(*coord),radius)
-				acad.AddText(anno_prefix+i[4:],Apoint(*coord),height)
-		else:
-			for ele in eleSet:
+			else:
 				coord=(ele[0],ele[1],0)
-				acad.AddCircle(Apoint(*coord),radius)
-				acad.AddText(anno_prefix+i[4:],Apoint(*coord),height)
+			acad.AddCircle(Apoint(*coord),radius)
+			acad.AddText(anno_prefix+i[4:],Apoint(*coord),height)
+
 
 
 if __name__=='__main__':
