@@ -9,6 +9,9 @@
 .idea/**/shelf
 .idea/**/*.xml
 .idea/**/*.iml
+*.dwg
+*.dwl
+*.dwl2
 # Generated files
 .idea/**/contentModel.xml
 __pycache__/
