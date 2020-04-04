@@ -5,7 +5,6 @@ import sys
 sys.path.append(r'G:\PycharmProject\PycomCAD\PycomCAD')
 from pycomcad import *
 import win32com
-
 def CollectEntity(blk):
 	"""
 	collect the information of entities in blk into a dictionary locally called collectDict.
@@ -76,7 +75,6 @@ def AddObject(collectDict,obj):
 		collectDict[obj.EntityName].add(data)
 	else:
 		pass
-
 
 def FindDiff(dict1,dict2):
 	"""
