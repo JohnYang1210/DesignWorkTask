@@ -2,7 +2,7 @@
 This script is used to check differences between 2 dwg files
 """
 import sys
-sys.path.append(r'G:\PycharmProject\PycomCAD\PycomCAD')
+sys.path.append(r'F:\PycharmProject\PycomCAD')
 from pycomcad import *
 import win32com
 def CollectEntity(blk):
@@ -108,11 +108,15 @@ def AddAnnotation(acad,diff,layername,anno_prefix,radius,height):
 if __name__=='__main__':
 
 	acad=Autocad()
-	acad.ActivateFile('test1.dwg')
+	if not acad.IsEarlyBind:
+		acad.TurnOnEarlyBind()
+	# if input()=='y':
+	# 	pass
+	acad.ActivateFile('霍尔1.dwg')
 	blk1=acad.acad.ActiveDocument.ModelSpace
 	test1=CollectEntity(blk1)
 	print('test1 done')
-	acad.ActivateFile('test2.dwg')
+	acad.ActivateFile('霍尔2.dwg')
 	blk2=acad.acad.ActiveDocument.ModelSpace
 	test2=CollectEntity(blk2)
 	print('test2 done')
