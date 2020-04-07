@@ -2,16 +2,17 @@
 Extract coordinates(x,y,z) from contours of topographic map
 """
 import os,sys
-os.chdir(r'F:\PycharmProject\PycomCAD')
+# os.chdir(r'F:\PycharmProject\PycomCAD')
 sys.path.append(r'F:\PycharmProject\PycomCAD')
 f=open('3DPointCloudYueNan.txt','w')
 from pycomcad import *
 
 acad=Autocad()
 print('Connected ...')
-ft=vtInt([8])
-fd=vtVariant(['SRTM_Terrain_data_shp'])
-slt=acad.GetSelectionSets('slt3')
+ft=VtInt([8])
+# fd=VtVariant(['SRTM_Terrain_data_shp'])
+fd=VtVariant(['dxt'])
+slt=acad.GetSelectionSets('slt2')
 slt.SelectOnScreen(ft,fd)
 for i in range(slt.Count):
 	if slt.Item(i).EntityName=='AcDbPolyline':
