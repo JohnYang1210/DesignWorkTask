@@ -12,6 +12,7 @@
 *.dwg
 *.dwl
 *.dwl2
+*.txt
 # Generated files
 .idea/**/contentModel.xml
 __pycache__/
