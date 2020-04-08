@@ -25,7 +25,7 @@ def viz_mayavi(points, vals="height"):
                          )
     mayavi.mlab.show()
 
-# points = np.loadtxt('3DPointCloudKuashan.txt',delimiter=',')
-filename=input('input file path and name')
-points=np.loadtxt(filename,delimiter=',')
+points = np.loadtxt('3DPointCloudKuashan.txt',delimiter=',')
+# filename=input('input file path and name')
+# points=np.loadtxt(filename,delimiter=',')
 viz_mayavi(points)
