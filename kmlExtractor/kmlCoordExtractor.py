@@ -29,6 +29,11 @@ class Kce:
 			df=pd.DataFrame(t0,columns=['longitude','latitude','altitude'])
 			filename=os.path.join(self.path,self.names[i]+'.csv')
 			df.to_csv(filename)
-if len(sys.argv)==2:
-	file=sys.argv[1]
+
+if __name__=='__main__':
+	if len(sys.argv)==2:
+		file=sys.argv[1]
+	else:
+		print(sys.argv)
+		file=input('输入kml文件路径及文件名')
 	Kce(file)
