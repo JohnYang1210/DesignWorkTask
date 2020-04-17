@@ -18,14 +18,18 @@ class Kce:
 		self.path=os.path.split(file)[0]
 		with open(file,'r',encoding='utf-8') as f:
 			self.content=f.read()
-		self.names_=re.findall(r'<name>(.*?)</name>',self.content)
+			content=self.content
+		self.names=[]
+		while content:
+			try:
+				ni=re.search(r'<name>(.*)</name>\s+<Style>',content)
+				self.names.append(ni.groups()[0])
+				content=content[ni.end():]
+			except AttributeError:
+				break
+
 		self.coordinates=re.findall(r'(?s)<coordinates>(.*?)</coordinates>',self.content)
-		if len(self.names_)==len(self.coordinates):
-			self.names=self.names_
-		elif len(self.names_)==len(self.coordinates)+1:
-			self.names=self.names_[1:]
-		else:
-			raise KceError('number of <name> is not equal to <coordinates> in file %s' % file)
+
 		self.extract()
 	def extract(self):
 		for i in range(len(self.names)):
@@ -35,6 +39,11 @@ class Kce:
 			df=pd.DataFrame(t0,columns=['longitude','latitude','altitude'])
 			filename=os.path.join(self.path,self.names[i]+'.csv')
 			df.to_csv(filename)
+	def getnames(self):
+		content=self.content
+
+
+
 
 if __name__=='__main__':
 	print('****欢迎使用kmlExtractor***')
