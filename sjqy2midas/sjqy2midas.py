@@ -45,7 +45,7 @@ class converter:
 		elemDf['iwid']=0
 		order=['element number','type','imat','ipro','elem1','elem2','elem4','elem3']
 		self.elemDf=elemDf[order]
-		self.elemDf.set_index('element number')
+		self.elemDf.set_index('element number',inplace=True) # attention here,set_index returns a new object unless inplace=True.
 		elemOutputs=io.StringIO()
 		elemOutputs.write(self.elemDf.to_csv(header=False))
 		elemSet=elemOutputs.getvalue()
@@ -60,7 +60,8 @@ class converter:
 
 
 if __name__=='__main__':
-	converter(r'G:\PycharmProject\work\sjqy2midas\葛伦打洛.s2k',dele=True)
+	inputs=input('input the .s2k file path')
+	converter(inputs,dele=True)
 
 
 
