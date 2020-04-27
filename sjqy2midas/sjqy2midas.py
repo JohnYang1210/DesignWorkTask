@@ -6,13 +6,13 @@ import os
 import pandas as pd 
 import io
 MEDIATEFILENAME='elementRawSet.csv'
-class converter:
-	def __init__(self,file,dele=False):
+class Model:
+	def __init__(self,file):
 		"""
 		By default,dele=False,if set True,related mediate file will be deleted.
 		
 		"""
-		self.dele=dele 
+		
 		filePath=os.path.split(file)
 		self.path=filePath[0]
 		self.filename=os.path.join(self.path,filePath[1].split('.')[0]+'.mgt')
@@ -20,9 +20,7 @@ class converter:
 			self.content=f.read()
 		self.nodeSet=self.GetNodeSet()
 		self.elemSet=self.GetEleSet()
-
-		self.gen()
-
+		
 	def GetNodeSet(self):
 		nodeStr=re.findall(r'(?s)JOINT\s+(.*)SPRING',self.content)[0]
 		pattr=re.compile(r'(?s)[X=|Y=|Z=]')
@@ -51,17 +49,17 @@ class converter:
 		elemSet=elemOutputs.getvalue()
 		elemOutputs.close()
 		return elemSet
-	def gen(self):
+	def gen(self,dele):
 		content='*NODE\n'+self.nodeSet+'*ELEMENT\n'+self.elemSet
 		with open(self.filename,'w')  as f:
 			f.write(content)
-		if self.dele:
+		if dele:
 			os.remove(self.mediateFilename)
 
 
 if __name__=='__main__':
 	inputs=input('input the .s2k file path')
-	converter(inputs,dele=True)
+	Model(inputs).gen(dele=True)
 
 
 
