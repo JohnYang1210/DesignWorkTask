@@ -3,7 +3,7 @@ import numpy as np
 def viz_mayavi(points, vals="height"):
     x = points[:, 0]  # x position of point
     y = points[:, 1]  # y position of point
-    z = 2*points[:, 2]  # z position of point
+    z = points[:, 2]  # z position of point
     # r = lidar[:, 3]  # reflectance value of point
     d = np.sqrt(x ** 2 + y ** 2)  # Map Distance from sensor
 
@@ -25,7 +25,7 @@ def viz_mayavi(points, vals="height"):
                          )
     mayavi.mlab.show()
 
-points = np.loadtxt('3DPointCloudKuashan.txt',delimiter=',')
+points = np.loadtxt(r'C:\Users\旺仔QQ糖\Desktop\贵州水城资料\3DPointCloudxiaojiachong.txt',delimiter=',')
 # filename=input('input file path and name')
 # points=np.loadtxt(filename,delimiter=',')
 viz_mayavi(points)

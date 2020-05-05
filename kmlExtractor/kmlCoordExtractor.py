@@ -5,7 +5,6 @@ from kml file
 import numpy
 import numpy as np 
 import pandas as pd 
-
 import re 
 import os
 from io import StringIO
