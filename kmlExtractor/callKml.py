@@ -1,6 +1,5 @@
 import sys
 from PyQt5.QtWidgets import QApplication,QMainWindow
-from MainWinSignalSlot01 import Ui_Form
 from kml import Ui_MainWindow
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
