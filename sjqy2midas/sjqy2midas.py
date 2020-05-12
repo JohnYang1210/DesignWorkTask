@@ -96,29 +96,33 @@ class Model:
 			>>>a=model.SelectEle(x=[0],otherCond=cond2a)
 			>>>model.Press(a,-10,42,'hydropress.csv')
 		"""
-		cond=[]
-		cond=self.DealXYZ(x,'x',cond)
-		cond=self.DealXYZ(y,'y',cond)
-		cond=self.DealXYZ(z,'z',cond)
+		collect=[]
+		a=self.DealXYZ(x,'x',collect)
+		collect.extend(a)
+		b=self.DealXYZ(y,'y',collect)
+		collect.extend(b)
+		c=self.DealXYZ(z,'z',collect)
+		collect.extend(c)
 		if otherCond:
-			cond.extend(otherCond)
-		print(len(cond))
-		if len(cond)>1:
-			condSet=pd.concat(cond,axis=1)
-		elif len(cond)==1:
-			condSet=cond[0]
+			collect.extend(otherCond)
+		if len(collect)>1:
+			condSet=pd.concat(collect,axis=1)
+		elif len(collect)==1:
+			condSet=collect[0]
 		return self.fullEle[condSet.all(1)]
 	def DealXYZ(self,cond,alpha,collector):
 		inte=[alpha+'1',alpha+'2',alpha+'3',alpha+'4']
 		if cond:
 			if isinstance(cond,list):
 				if len(cond)==1:
+					print(cond[0])
 					collector.append(self.fullEle[inte]==cond[0])
-					print(len(collector))
-				elif len(cond)==2:
-					if cond[0]:                                      
+				if len(cond)==2:
+					if cond[0] or cond[0]==0:  
+                                 
 						collector.append(self.fullEle[inte]>cond[0])
-					if cond[1]:
+					if cond[1] or cond[1]==0:
+
 						collector.append(self.fullEle[inte]<cond[1])
 				# else:
 				# 	raise MidasErr('Input type is wrong')
@@ -126,23 +130,25 @@ class Model:
 				raise MidasErr('Input type is wrong')
 		return collector
 
-	def Press(self,elemSet,k,b,filename):
+	def Press(self,elemSet,f,dire,filename):
 		"""
 		elemSet: the selected element set,normally returned value of instance method:self.SelectEle
+		f:function
+		dire:荷载作用方向,'LX','LY','LZ','GX','GY','GZ'
 		"""
 		dic={'CMD':'HYDRO',
 		'ETYP':'PLATE',
 		'iFACE':'FACE',
-		'DIR':'LZ',
+		'DIR':dire,
 		'VX':0,
 		'VY':0,
 		'VZ':0,
 		'bPro':'NO',
 		'PU':0,
-		'P1':elemSet['z1'].apply(lambda x:k*x+b),
-		'P2':elemSet['z2'].apply(lambda x:k*x+b),
-		'P3':elemSet['z3'].apply(lambda x:k*x+b),
-		'P4':elemSet['z4'].apply(lambda x:k*x+b),
+		'P1':elemSet['z1'].apply(lambda x:f(x)),
+		'P2':elemSet['z2'].apply(lambda x:f(x)),
+		'P3':elemSet['z3'].apply(lambda x:f(x)),
+		'P4':elemSet['z4'].apply(lambda x:f(x)),
 		'group':' '
 		}
 		pressDf=pd.DataFrame(dic,index=elemSet.index)

@@ -12,5 +12,10 @@ lb=0.4535924 # 1磅(lb)=0.4535924千克(kg)
 oz=0.02835 #1盎司=0.02835千克
 
 #pressure
-ksi=6840 # 1ksi=6.84Mpa
+ksi=6895 # 1ksi=6895Kpa
 psi=6.894757 # 1psi=6.894757Kpa
+psf=0.0478803 # 1psf=0.0478803Kpa
+
+#force
+kips=4.448 # 1kips=4.448KN
+
