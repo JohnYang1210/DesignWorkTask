@@ -165,7 +165,10 @@ class Model:
 			for j in charsets:
 				selected=self.SelectEle(x=[j])
 				if len(selected)>1:
-					sets[i][i+'_wall_'+str(j)]=selected 
+					sets[i][i+'_wall_'+str(j)]={'all':selected}
+	def getMidAndSup(self):
+		pass
+		
 	
 
 if __name__=='__main__':
