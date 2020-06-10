@@ -102,11 +102,12 @@ class Model:
 		cond=self.DealXYZ(z,'z',cond)
 		if otherCond:
 			cond.extend(otherCond)
-		print(len(cond))
+		# print(len(cond))
 		if len(cond)>1:
 			condSet=pd.concat(cond,axis=1)
 		elif len(cond)==1:
 			condSet=cond[0]
+		
 		return self.fullEle[condSet.all(1)]
 	def DealXYZ(self,cond,alpha,collector):
 		inte=[alpha+'1',alpha+'2',alpha+'3',alpha+'4']
@@ -126,23 +127,25 @@ class Model:
 				raise MidasErr('Input type is wrong')
 		return collector
 
-	def Press(self,elemSet,k,b,filename):
+	def Press(self,elemSet,f,dire,filename):
 		"""
 		elemSet: the selected element set,normally returned value of instance method:self.SelectEle
+		f:function
+		dire:荷载作用方向,'LX','LY','LZ','GX','GY','GZ'
 		"""
 		dic={'CMD':'HYDRO',
 		'ETYP':'PLATE',
 		'iFACE':'FACE',
-		'DIR':'LZ',
+		'DIR':dire,
 		'VX':0,
 		'VY':0,
 		'VZ':0,
 		'bPro':'NO',
 		'PU':0,
-		'P1':elemSet['z1'].apply(lambda x:k*x+b),
-		'P2':elemSet['z2'].apply(lambda x:k*x+b),
-		'P3':elemSet['z3'].apply(lambda x:k*x+b),
-		'P4':elemSet['z4'].apply(lambda x:k*x+b),
+		'P1':elemSet['z1'].apply(lambda x:f(x)),
+		'P2':elemSet['z2'].apply(lambda x:f(x)),
+		'P3':elemSet['z3'].apply(lambda x:f(x)),
+		'P4':elemSet['z4'].apply(lambda x:f(x)),
 		'group':' '
 		}
 		pressDf=pd.DataFrame(dic,index=elemSet.index)
