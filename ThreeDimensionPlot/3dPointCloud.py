@@ -25,7 +25,7 @@ def viz_mayavi(points, vals="height"):
                          )
     mayavi.mlab.show()
 
-points = np.loadtxt(r'C:\Users\旺仔QQ糖\Desktop\贵州水城资料\3DPointCloudxiaojiachong.txt',delimiter=',')
+points = np.loadtxt(r'E:\设计卷册\宝多莱佳截洪沟\3DPointCloudBJLDi.txt',delimiter=',')
 # filename=input('input file path and name')
 # points=np.loadtxt(filename,delimiter=',')
 viz_mayavi(points)
