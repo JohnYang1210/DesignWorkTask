@@ -148,10 +148,10 @@ class Mmodel(Model):
                         eleNum=aa.index[indeE]  # 得到elem具体数字
                         value=a[caseNum]
                     elif limi=='min':
-                        caseInde=np.argmax(a.values,0)
+                        caseInde=np.argmin(a.values,0)
                         caseNum=aa.columns[caseInde]
                         b=aa[caseNum]
-                        indeE=np.argmax(b.values,0)
+                        indeE=np.argmin(b.values,0)
                         eleNum=aa.index[indeE]
                         value=a[caseNum]
                     else:
