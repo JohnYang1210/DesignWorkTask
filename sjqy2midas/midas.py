@@ -2,9 +2,15 @@ import re
 import pandas as pd 
 import os 
 from sjqy2midas import Model,MidasErr
+import numpy as np
 MEDIATEFILENAME_Element='elementRawSet.csv'
 MEDIATEFILENAME_Node='nodeRawSet.csv'
 DOMAINNAME='domain.csv'
+def findmax(x):
+    if abs(max(x))>abs(min(x)):
+        return max(x)
+    else:
+        return min(x)
 class Mmodel(Model):
     def __init__(self,file,dele=False,interval=0.01,r=1,writeDomainFile=True):
         filePath=os.path.split(file)
@@ -22,7 +28,7 @@ class Mmodel(Model):
             with open(os.path.join(self.path,'domainFile.txt'),'w') as f:
                 for i in self.domainSet:
                     p=(self.domainSet[i]).copy()        #copy() shall be called, because p.pop will influence self.domainSet[i], specifically here, pop key 'all'.
-                    p.pop('all')
+                    nothing=p.pop('all')
                     for j in p:
                         for k in p[j]:
                             f.write(str(k)+',')
@@ -63,9 +69,9 @@ class Mmodel(Model):
         self.domainDf=self.domainDf.set_index('ikey')
         if dele:
             os.remove(filename)
-        domainKeys=self.domainDf['madoname'].drop_duplicates().values
+        self.domainKeys=self.domainDf['madoname'].drop_duplicates().values
         self.domainSet={}
-        for i in domainKeys:
+        for i in self.domainKeys:
             self.domainSet[i]={}
             self.domainSet[i]['all']=self.domainDf.loc[self.domainDf['madoname']==i].index 
             self.addMs(self.domainSet[i],interval,r)
@@ -112,6 +118,55 @@ class Mmodel(Model):
         Set['support_'+kChar+'_large']=self.SelectEle(**{plane:[xyzSets[plane][0]],kChar:[kLarge2-interval,kLarge+interval],pChar:[pSmall-interval,pLarge+interval]}).index
         Set['support_'+pChar+'_small']=self.SelectEle(**{plane:[xyzSets[plane][0]],pChar:[pSmall-interval,pSmall2+interval],kChar:[kSmall-interval,kLarge+interval]}).index 
         Set['support_'+pChar+'_large']=self.SelectEle(**{plane:[xyzSets[plane][0]],pChar:[pLarge2-interval,pLarge+interval],kChar:[kSmall-interval,kLarge+interval]}).index
+    
+    def GetDomainInnerForceResult(self,case,requirements):
+        """
+    case: read from excel of a specific case,raw data
+    requirements:required inner force result, for example,{'Mxx (kN*m/m)':('max',['Fxx (kN/m)','Fyy (kN/m)']),'Myy (kN*m/m)':('max',['Fxx (kN/m)','Fyy (kN/m)'])}
+        """
+        domains=self.domainSet.copy()
+        dfTotal=pd.DataFrame()
+        for i in domains:             # i 是str,为各个域的名称,domains 的key
+            domainCP=domains[i].copy() #domainCP是单个域的index集合，包括 'all' 和跨中，支座
+            domainCP.pop('all')        # 刨除'all' 的单个域的index集合
+            for j in domainCP:
+                p=domains[i][j]         # p 是域的支座，跨中单元集index
+                for req in requirements: # req 是str,为要求提取的内力名称, requirements的key
+                    caseX=case.groupby(['Load','Elem'])[req].apply(findmax) # caseX是所有单元的待提取内力,mutiIndex Series
+                    relatedReq=requirements[req][1]  # 与待提取内力相应的内力列表
+                    caseResBind={} #收集待提取内力DataFrame的dict 
+                    for k in relatedReq:
+                        caseResBind[k]=(case.groupby(['Load','Elem'])[k].apply(findmax)).unstack(0)  # 收集待提取内力DataFrame
+                    limi=requirements[req][0] # 'max' or 'min'
+                    aa=caseX.unstack(0).loc[p] # aa是caseX经过unstack处理后得到的DataFrame,且index为 p
+                    a=getattr(aa,limi)() #每个case下待提取内力的极值，Series,index为case..
+                    if limi=='max':
+                        caseInde=np.argmax(a.values,0)  #极值对应的case 索引
+                        caseNum=aa.columns[caseInde]  # 得到case名称
+                        b=aa[caseNum]   #b 为极值所在case下的某域所有单元的待求内力的Series
+                        indeE=np.argmax(b.values,0) # 极值对应的elem索引
+                        eleNum=aa.index[indeE]  # 得到elem具体数字
+                        value=a[caseNum]
+                    elif limi=='min':
+                        caseInde=np.argmin(a.values,0)
+                        caseNum=aa.columns[caseInde]
+                        b=aa[caseNum]
+                        indeE=np.argmin(b.values,0)
+                        eleNum=aa.index[indeE]
+                        value=a[caseNum]
+                    else:
+                        raise MidasErr('Nothing got')
+                    caseBindResults={}
+                    for m in relatedReq:
+                        caseBindResults[m]=caseResBind[m].loc[eleNum,caseNum]
+                    dfComponent=pd.DataFrame([[value,caseNum,eleNum]],index=[i+j],columns=[req,'case','element'])
+                    dfComponent=pd.concat([dfComponent,pd.DataFrame(caseBindResults,index=[i+j])])
+                    dfTotal=dfTotal.append(dfComponent)
+        return dfTotal
+
+
+        
+
     
 
 

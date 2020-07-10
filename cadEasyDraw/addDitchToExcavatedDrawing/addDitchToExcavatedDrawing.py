@@ -20,8 +20,8 @@ try:
 			# print(obj.Coordinate(0),obj.Coordinate(1))
 			c1=obj.Coordinate(0)
 			c2=obj.Coordinate(1)
-			acad.AddLine(Apoint(c1[0],c1[1],0),Apoint(c1[0],c1[1]+25,0))
-			acad.AddLine(Apoint(c2[0],c2[1]),Apoint(c2[0],c2[1]+25))
+			acad.AddLine(Apoint(c1[0],c1[1],0),Apoint(c1[0],c1[1]+1,0))
+			acad.AddLine(Apoint(c2[0],c2[1]),Apoint(c2[0],c2[1]+1))
 			copyObj=obj.Copy()
 			copyObj.Move(Apoint(c1[0],c1[1],0),Apoint(c1[0],c1[1]+25,0))
 			
