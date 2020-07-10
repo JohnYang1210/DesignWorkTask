@@ -28,7 +28,8 @@ class Model:
 			os.remove(self.mediateFilenameElem)
 			os.remove(self.mediateFilenameNode)
 		self.fullEle=self.GetFullEle()
-		
+		self.getWalls()
+
 	def GetNodeSet(self):
 		nodeStr=re.findall(r'(?s)JOINT\s+(.*)SPRING',self.content)[0]
 		pattr=re.compile(r'(?s)[X=|Y=|Z=]')
@@ -136,10 +137,9 @@ class Model:
 			if isinstance(cond,list):
 				if len(cond)==1:
 					collector.append(self.fullEle[inte]==cond[0])
-					print(len(collector))
 				elif len(cond)==2:
 					if cond[0]:                                      
-						collector.append(self.fullEle[inte]>cond[0])
+						collector.append(self.fullEle[inte]>cond[0])   #这种选择情况，不能把0当做界限值，因为 0 是 False
 					if cond[1]:
 						collector.append(self.fullEle[inte]<cond[1])
 				# else:
@@ -174,8 +174,29 @@ class Model:
 		order=['CMD','ETYP','iFACE','DIR','VX','VY','VZ','bPro','PU','P1','P2','P3','P4','group']
 		pressDf[order].to_csv(os.path.join(self.path,filename),sep=',')
 	
+<<<<<<< HEAD
 	
 
+=======
+	def getWalls(self):
+		"""
+		得到walls的集合
+		"""
+		self.xWalls={}
+		self.yWalls={}
+		self.zWalls={}
+		sets={'x':self.xWalls,'y':self.yWalls,'z':self.zWalls}
+		for i in sets:
+			charsets=self.fullEle[i+'1'].drop_duplicates().values
+			for j in charsets:
+				selected=self.SelectEle(x=[j])
+				if len(selected)>1:
+					sets[i][i+'_wall_'+str(j)]={'all':selected}
+	def getMidAndSup(self):
+		pass
+		
+	
+>>>>>>> refs/remotes/origin/master
 
 if __name__=='__main__':
 	inputs=input('input the .s2k file path')

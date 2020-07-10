@@ -2,7 +2,6 @@
 This script is used to extract coordinates
 from kml file
 """
-import numpy
 import numpy as np 
 import pandas as pd 
 import re 
